@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+@theme {
+  /* Royal Light Theme - Sober & Elegant */
+  
+  /* Backgrounds - Light & Clean */
+  --color-ivory: #f8f6f3;
+  --color-cream: #f0ebe3;
+  --color-parchment: #e5ddd1;
+  --color-stone: #d4cdc3;
+  
+  /* Primary - Royal Navy (for text and accents) */
+  --color-navy: #1e3a5f;
+  --color-navy-deep: #132742;
+  --color-navy-light: #2d5a87;
+  
+  /* Accent - Burgundy/Wine */
+  --color-burgundy: #722f37;
+  --color-wine: #5c2028;
+  --color-rose: #9c4a52;
+  
+  /* Gold Accents */
+  --color-gold: #b8860b;
+  --color-gold-light: #d4a84b;
+  --color-gold-muted: #a67c00;
+  
+  /* Status Colors */
+  --color-sage: #4a7c59;
+  --color-terracotta: #c67b5c;
+  --color-slate: #5a6275;
+  
+  /* Text - High Contrast on Light BG */
+  --color-ink: #1a1a1a;
+  --color-charcoal: #2d2d2d;
+  --color-graphite: #4a4a4a;
+  
+  /* LEGACY COLORS - Mapped to new theme for compatibility */
+  --color-midnight: #1e3a5f;
+  --color-teal: #2d5a87;
+  --color-coral: #722f37;
+  --color-mint: #4a7c59;
+  --color-lavender: #5a6275;
+  
+  /* Keep original fonts */
+  --font-display: "Syne", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-ivory text-ink font-body antialiased;
+  }
+  
+  /* Smooth scrollbar for light theme */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: var(--color-cream);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-stone);
+    border-radius: 5px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-navy-light);
+  }
+}

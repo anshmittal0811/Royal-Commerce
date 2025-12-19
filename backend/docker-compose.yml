@@ -1,0 +1,207 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql_docker
+    environment:
+      MYSQL_ROOT_USERNAME: root
+      MYSQL_ROOT_PASSWORD: 41567HOLA
+      MYSQL_DATABASE: e-commerce
+    ports:
+      - "3307:3306"
+    networks:
+      - spring-network
+    volumes:
+      - mysql-volume:/var/lib/mysql
+
+  eureka-service:
+    build:
+      context: ./eureka-service
+      dockerfile: Dockerfile
+    container_name: eureka-service
+    working_dir: /app
+    volumes:
+      - ./eureka-service:/app       # Live reload
+      - ~/.m2:/root/.m2                 # Cache Maven dependencies
+    ports:
+      - "8761:8761"
+    command: ["./mvnw", "spring-boot:run"]
+    networks:
+      - spring-network
+
+  gateway-service:
+    build:
+      context: ./gateway-service
+      dockerfile: Dockerfile
+    container_name: gateway-service
+    working_dir: /app
+    volumes:
+      - ./gateway-service:/app
+      - ~/.m2:/root/.m2
+    ports:
+      - "8090:8090"
+    command: ["./mvnw", "spring-boot:run"]
+    networks:
+      - spring-network
+    depends_on:
+      - mysql
+      - eureka-service
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    working_dir: /app
+    volumes:
+      - ./auth-service:/app
+      - ~/.m2:/root/.m2
+    ports:
+      - "8081:8081"
+    command: ["./mvnw", "spring-boot:run"]
+    networks:
+      - spring-network
+    depends_on:
+      - mysql
+      - eureka-service
+      - gateway-service
+
+  shopping-service:
+    build:
+      context: ./shopping-service
+      dockerfile: Dockerfile
+    container_name: shopping-service
+    working_dir: /app
+    volumes:
+      - ./shopping-service:/app
+      - ~/.m2:/root/.m2
+    ports:
+      - "8082:8082"
+    command: ["./mvnw", "spring-boot:run"]
+    networks:
+      - spring-network
+    depends_on:
+      - mysql
+      - eureka-service
+      - gateway-service
+
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    container_name: product-service
+    working_dir: /app
+    volumes:
+      - ./product-service:/app
+      - ~/.m2:/root/.m2
+    ports:
+      - "8083:8083"
+    command: ["./mvnw", "spring-boot:run"]
+    networks:
+      - spring-network
+    depends_on:
+      - mysql
+      - eureka-service
+      - gateway-service
+
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    working_dir: /app
+    volumes:
+      - ./payment-service:/app
+      - ~/.m2:/root/.m2
+    environment:
+      - JAVA_OPTS=-Dspring.devtools.restart.enabled=true -Dspring.devtools.livereload.enabled=true
+    ports:
+      - "8084:8084"
+    command: ["./mvnw", "spring-boot:run", "-Dspring-boot.run.fork=false"]
+    networks:
+      - spring-network
+    depends_on:
+      mysql:
+        condition: service_started
+      eureka-service:
+        condition: service_started
+      gateway-service:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: order-service
+    working_dir: /app
+    volumes:
+      - ./order-service:/app
+      - ~/.m2:/root/.m2
+    ports:
+      - "8085:8085"
+    command: ["./mvnw", "spring-boot:run"]
+    networks:
+      - spring-network
+    depends_on:
+      - mysql
+      - eureka-service
+      - gateway-service
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    working_dir: /app
+    volumes:
+      - ./notification-service:/app
+      - ~/.m2:/root/.m2
+    ports:
+      - "8086:8086"
+    command: ["./mvnw", "spring-boot:run"]
+    networks:
+      - spring-network
+    depends_on:
+      mysql:
+        condition: service_started
+      eureka-service:
+        condition: service_started
+      gateway-service:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+    networks:
+      - spring-network
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-broker-api-versions --bootstrap-server localhost:9092 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+networks:
+  spring-network:
+    driver: bridge
+
+volumes:
+  mysql-volume:

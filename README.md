@@ -1,18 +1,22 @@
 # E-Commerce Microservices Platform
 
-A production-ready e-commerce backend built with Java Spring Boot following microservices architecture. The system features service discovery, API gateway with JWT authentication, event-driven notifications, and is fully containerized with Docker.
+A full-stack e-commerce platform featuring a Java Spring Boot microservices backend and a modern React frontend. The system implements service discovery, API gateway with JWT authentication, event-driven notifications, and is fully containerized with Docker.
 
 ## Table of Contents
 
 - [Tech Stack](#tech-stack)
 - [Architecture](#architecture)
+- [Project Structure](#project-structure)
 - [Services](#services)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [API Endpoints](#api-endpoints)
+- [Frontend](#frontend)
 - [Configuration](#configuration)
 
 ## Tech Stack
+
+### Backend
 
 | Category | Technology |
 |----------|------------|
@@ -27,6 +31,17 @@ A production-ready e-commerce backend built with Java Spring Boot following micr
 | Documentation | Swagger / OpenAPI 3 |
 | Containerization | Docker & Docker Compose |
 
+### Frontend
+
+| Category | Technology |
+|----------|------------|
+| Framework | React 18 + TypeScript |
+| Build Tool | Vite |
+| Styling | Tailwind CSS |
+| State Management | TanStack Query (React Query) |
+| Routing | React Router v7 |
+| HTTP Client | Axios |
+
 ## Architecture
 
 The platform follows a microservices architecture with the following patterns:
@@ -35,20 +50,50 @@ The platform follows a microservices architecture with the following patterns:
 - **API Gateway**: Single entry point handling routing, authentication, and load balancing
 - **Event-Driven**: Kafka enables asynchronous communication between Payment and Notification services
 - **Feign Clients**: Declarative REST clients for synchronous inter-service communication
+- **Modern Frontend**: React SPA with TanStack Query for efficient data fetching and caching
 
 ### Request Flow
 
-1. Client sends request to **Gateway Service** (port 8090)
-2. Gateway validates JWT token via `JwtAuthFilter`
-3. Gateway discovers target service via **Eureka**
-4. Request is routed to the appropriate microservice
-5. Services communicate internally using **Feign clients**
-6. Async events (e.g., payment completed) are published to **Kafka**
+1. User interacts with the **React Frontend** (port 3000)
+2. Frontend sends API requests to **Gateway Service** (port 8090)
+3. Gateway validates JWT token via `JwtAuthFilter`
+4. Gateway discovers target service via **Eureka**
+5. Request is routed to the appropriate microservice
+6. Services communicate internally using **Feign clients**
+7. Async events (e.g., payment completed) are published to **Kafka**
+
+## Project Structure
+
+```
+e_commerce/
+├── backend/                    # Backend microservices
+│   ├── auth-service-api/       # Authentication & user management
+│   ├── eureka-service-api/     # Service discovery server
+│   ├── gateway-service-api/    # API Gateway with JWT auth
+│   ├── notification-service-api/ # Email/SMS notifications
+│   ├── order-service-api/      # Order management
+│   ├── payment-service-api/    # Payment processing
+│   ├── product-service-api/    # Product catalog
+│   ├── shopping-service-api/   # Shopping cart
+│   ├── docker-compose.yml      # Docker orchestration
+│   └── pom.xml                 # Parent Maven POM
+├── frontend/                   # React frontend
+│   ├── src/
+│   │   ├── api/               # API client & endpoints
+│   │   ├── components/        # Reusable UI components
+│   │   ├── context/           # React context (Auth)
+│   │   ├── hooks/             # Custom React Query hooks
+│   │   └── pages/             # Page components
+│   ├── Dockerfile
+│   └── package.json
+└── README.md
+```
 
 ## Services
 
 | Service | Port | Description |
 |---------|------|-------------|
+| **Frontend** | 3000 | React SPA with Tailwind CSS |
 | **eureka-service-api** | 8761 | Service registry and discovery server |
 | **gateway-service-api** | 8090 | API Gateway with JWT authentication and routing |
 | **auth-service-api** | 8081 | User registration, login, and JWT token management |
@@ -98,8 +143,10 @@ The platform follows a microservices architecture with the following patterns:
 
 - **Docker** (v20.10+)
 - **Docker Compose** (v2.0+)
-- **Java 17+** (for local development)
-- **Maven 3.8+** (for local development)
+- **Java 17+** (for backend development)
+- **Maven 3.8+** (for backend development)
+- **Node.js 20+** (for frontend development)
+- **npm 10+** (for frontend development)
 
 ## Getting Started
 
@@ -111,16 +158,25 @@ The platform follows a microservices architecture with the following patterns:
    cd e_commerce
    ```
 
-2. **Start all services**
+2. **Start all backend services**
    ```bash
+   cd backend
    docker-compose up --build
    ```
 
-3. **Verify services are running**
+3. **Start the frontend** (in a new terminal)
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+4. **Verify services are running**
+   - Frontend: http://localhost:3000
    - Eureka Dashboard: http://localhost:8761
    - Gateway Swagger UI: http://localhost:8090/swagger-ui.html
 
-4. **Stop all services**
+5. **Stop all services**
    ```bash
    docker-compose down
    ```
@@ -129,10 +185,11 @@ The platform follows a microservices architecture with the following patterns:
 
 1. **Start infrastructure services**
    ```bash
+   cd backend
    docker-compose up mysql kafka -d
    ```
 
-2. **Run each service individually**
+2. **Run each backend service individually**
    ```bash
    cd <service-name>
    ./mvnw spring-boot:run
@@ -143,6 +200,13 @@ The platform follows a microservices architecture with the following patterns:
    2. gateway-service-api
    3. auth-service-api
    4. Other services (any order)
+
+3. **Run the frontend**
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
 
 ## API Endpoints
 
@@ -157,8 +221,10 @@ All APIs are accessible through the Gateway at `http://localhost:8090`
 ### Users (Authenticated)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/users/profile` | Get current user profile |
-| PUT | `/api/users/profile` | Update user profile |
+| GET | `/api/users/admin/users` | Get all users (Admin only) |
+| GET | `/api/users/client/user/{id}` | Get user by ID |
+| GET | `/api/users/admin/verification` | Verify admin role |
+| GET | `/api/users/client/verification` | Verify client role |
 
 ### Products (Authenticated)
 | Method | Endpoint | Description |
@@ -197,6 +263,37 @@ Include the JWT token in all authenticated requests:
 Authorization: Bearer <your-jwt-token>
 ```
 
+## Frontend
+
+The frontend is a modern React single-page application built with:
+
+- **React 18** with TypeScript for type safety
+- **Vite** for fast development and optimized builds
+- **Tailwind CSS** for utility-first styling
+- **TanStack Query** for server state management
+- **React Router v7** for client-side routing
+- **Axios** for HTTP requests with interceptors
+
+### Frontend Features
+
+- 🔐 **Authentication**: Login and registration with JWT token management
+- 🛍️ **Product Catalog**: Browse products with a beautiful grid layout
+- 🛒 **Shopping Cart**: Add/remove items with real-time updates
+- 📦 **Order Management**: View order history and details
+- 💳 **Payment Integration**: Process payments for pending orders
+- 🌙 **Dark Theme**: Modern dark UI with gradient accents
+- 📱 **Responsive Design**: Works on all screen sizes
+
+### Running the Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend will be available at `http://localhost:3000` and will proxy API requests to the Gateway at `http://localhost:8090`.
+
 ## Configuration
 
 ### Environment Variables
@@ -222,6 +319,7 @@ Each service has its own `application.yml` in `src/main/resources/`:
 
 | Internal Port | External Port | Service |
 |---------------|---------------|---------|
+| 3000 | 3000 | Frontend |
 | 3306 | 3307 | MySQL |
 | 8761 | 8761 | Eureka |
 | 8090 | 8090 | Gateway |
@@ -248,4 +346,3 @@ Individual service API docs:
 ## License
 
 This project is licensed under the MIT License.
-

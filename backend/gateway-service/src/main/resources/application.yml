@@ -1,0 +1,98 @@
+
+server:
+  port: 8090
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      locator:
+        discovery:
+          enabled: true
+          lowerCaseServiceId: true
+      routes:
+        - id: auth-service-public
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+
+        - id: auth-service-secured
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=1
+            - JwtAuthFilter
+
+
+        - id: shopping-service
+          uri: lb://SHOPPING-SERVICE
+          predicates:
+            - Path=/api/shopping/**
+          filters:
+            - StripPrefix=1
+            - JwtAuthFilter
+
+
+        - id: product-service
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/product/**
+          filters:
+            - StripPrefix=1
+            - JwtAuthFilter
+
+
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/api/orders/**
+          filters:
+            - StripPrefix=1
+            - JwtAuthFilter
+
+        - id: payment-service
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/api/payment/**
+          filters:
+            - StripPrefix=1
+            - JwtAuthFilter
+
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - StripPrefix=1
+        
+jwt:
+  secret: 3E3U3HR23GR627GR27723RY23IJR923R2379HRRJK934
+  expiration: 604800000
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka/
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    urls:
+      - name: Auth Service
+        url: /v3/api-docs/auth
+      - name: Product Service
+        url: /v3/api-docs/product
+      - name: Shopping Service
+        url: /v3/api-docs/shopping
+      - name: Order Service
+        url: /v3/api-docs/order
+      - name: Payment Service
+        url: /v3/api-docs/payment
+      - name: Notification Service
+        url: /v3/api-docs/notification
