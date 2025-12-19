@@ -26,14 +26,12 @@ export function Home() {
         <div className="text-center max-w-4xl mx-auto">
           
           <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-tight mb-6 sm:mb-8">
-            <span className="text-ink">Modern</span>{' '}
-            <span className="text-burgundy">E-Commerce</span>
-            <br />
-            <span className="text-ink">Platform</span>
+            <span className="text-ink">Royal </span>
+            <span className="text-burgundy">Commerce</span>
           </h1>
           
           <p className="text-base sm:text-xl text-graphite max-w-2xl mx-auto mb-8 sm:mb-12 leading-relaxed px-4">
-            A production-ready e-commerce backend built with Java Spring Boot, 
+            A premium e-commerce platform built with Java Spring Boot microservices, 
             featuring service discovery, API gateway with JWT authentication, 
             and event-driven notifications.
           </p>

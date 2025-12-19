@@ -27,7 +27,7 @@ export function Navbar() {
               <span className="text-ivory font-display font-bold text-xs sm:text-sm">RC</span>
             </div>
             <span className="font-display font-bold text-lg sm:text-xl tracking-tight text-ink">
-              Royal<span className="text-burgundy">Commerce</span>
+              Royal <span className="text-burgundy">Commerce</span>
             </span>
           </Link>
 

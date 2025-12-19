@@ -58,7 +58,7 @@ export function Register() {
       <div className="w-full max-w-lg">
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="font-display text-2xl sm:text-4xl font-bold text-ink mb-2">Create account</h1>
-          <p className="text-graphite text-sm sm:text-base">Join RoyalCommerce today</p>
+          <p className="text-graphite text-sm sm:text-base">Join Royal Commerce today</p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 sm:p-8 rounded-2xl bg-cream border border-stone shadow-lg">
