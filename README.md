@@ -280,8 +280,7 @@ The frontend is a modern React single-page application built with:
 - 🛍️ **Product Catalog**: Browse products with a beautiful grid layout
 - 🛒 **Shopping Cart**: Add/remove items with real-time updates
 - 📦 **Order Management**: View order history and details
-- 💳 **Payment Integration**: Process payments for pending orders
-- 🌙 **Dark Theme**: Modern dark UI with gradient accents
+- 💳 **Payment Integration (Dummy UI)**: Process payments for pending orders
 - 📱 **Responsive Design**: Works on all screen sizes
 
 ### Running the Frontend
