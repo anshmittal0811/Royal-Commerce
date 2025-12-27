@@ -94,14 +94,14 @@ e_commerce/
 | Service | Port | Description |
 |---------|------|-------------|
 | **Frontend** | 3000 | React SPA with Tailwind CSS |
-| **eureka-service-api** | 8761 | Service registry and discovery server |
-| **gateway-service-api** | 8090 | API Gateway with JWT authentication and routing |
-| **auth-service-api** | 8081 | User registration, login, and JWT token management |
-| **shopping-service-api** | 8082 | Shopping cart operations (add, remove, view items) |
-| **product-service-api** | 8083 | Product catalog management (CRUD operations) |
-| **payment-service-api** | 8084 | Payment processing and order completion |
-| **order-service-api** | 8085 | Order creation and lifecycle management |
-| **notification-service-api** | 8086 | Email and SMS notifications via Kafka consumer |
+| **eureka-service** | 8761 | Service registry and discovery server |
+| **gateway-service** | 8090 | API Gateway with JWT authentication and routing |
+| **auth-service** | 8081 | User registration, login, and JWT token management |
+| **shopping-service** | 8082 | Shopping cart operations (add, remove, view items) |
+| **product-service** | 8083 | Product catalog management (CRUD operations) |
+| **payment-service** | 8084 | Payment processing and order completion |
+| **order-service** | 8085 | Order creation and lifecycle management |
+| **notification-service** | 8086 | Email and SMS notifications via Kafka consumer |
 
 ### Service Details
 
@@ -196,9 +196,9 @@ e_commerce/
    ```
 
    Start services in this order:
-   1. eureka-service-api
-   2. gateway-service-api
-   3. auth-service-api
+   1. eureka-service
+   2. gateway-service
+   3. auth-service
    4. Other services (any order)
 
 3. **Run the frontend**
