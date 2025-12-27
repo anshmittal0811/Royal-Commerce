@@ -1,4 +1,4 @@
-# E-Commerce Microservices Platform
+# E-Commerce Platform
 
 A full-stack e-commerce platform featuring a Java Spring Boot microservices backend and a modern React frontend. The system implements service discovery, API gateway with JWT authentication, event-driven notifications, and is fully containerized with Docker.
 
